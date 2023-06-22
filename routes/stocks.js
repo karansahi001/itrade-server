@@ -2,9 +2,11 @@ require('dotenv').config();
 const router = require("express").Router();
 const axios = require('axios');
 const stocksController = require("../controllers/stocksData")
-const apiKey = process.env.API_KEY
 
-const apiUrl = "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=TSLA,AAPL,NVDA,QQQ,AMD,VOO,AMC,TD&apiKey=";
+const apiKey = process.env.API_KEY
+const newsApiKey = process.env.NEWS_API_KEY
+
+const apiUrl = "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=TSLA,AAPL,NVDA,QQQ,AMD,VOO,AMC,TD,RBLX,INTC,KO,AI,LOGI,DIS,VYM,PG,SBUX,HD,COST,WMT,PFE&apiKey=";
 
 router.get("/stocks", (_req, res) => {
     const fetchData = async () => {
@@ -29,6 +31,20 @@ router.get("/stocks/:ticker", (req, res) => {
         }
     }
     fetchTickerData();
+})
+
+router.get("/stocks-chart/:ticker", (req, res) => {
+    const { ticker } = req.params;
+    const fetchChartData = async () => {
+        try{
+            const response = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${newsApiKey}`)
+            res.status(200).json(response.data)
+        }catch(err){
+            res.status(400).send(err);
+        }
+    }
+    fetchChartData();
+
 })
 
 router.get("/news/:ticker", (req, res) => {
@@ -68,6 +84,20 @@ router.get("/gainers", (_req, res) => {
         }
     }
     fetchGainersData();
+})
+
+router.get("/news", (_req, res) => {
+
+    const fetchNewsData = async () => {
+        try{
+            const response = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&limit=50&sort=EARLIEST&apikey=${newsApiKey}`)
+            const updateArr = response.data.feed.slice(0, 10)
+            res.status(200).json(updateArr)
+        }catch(err){
+            res.status(400).send(err);
+        }
+    }
+    fetchNewsData();
 })
 
 router.post("/stocks", stocksController.buy)
