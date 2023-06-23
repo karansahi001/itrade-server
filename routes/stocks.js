@@ -47,18 +47,18 @@ router.get("/stock-data/:ticker", (req, res) => {
     fetchTickerData();
 })
 
-// router.get("/stocks-chart/:ticker", (req, res) => {
-//     const { ticker } = req.params;
-//     const fetchChartData = async () => {
-//         try {
-//             const response = await axios.get(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${ticker}&interval=5min&apikey=${newsApiKey}`)
-//             res.status(200).json(response.data)
-//         } catch (err) {
-//             res.status(400).send(err);
-//         }
-//     }
-//     fetchChartData();
-// })
+router.get("/additional-data/:ticker", (req, res) => {
+    const { ticker } = req.params
+    const fetchAdditionalData = async () => {
+        try {
+            const response = await axios.get(`https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=${newsApiKey}`)
+            res.status(200).json(response.data)
+        } catch (err) {
+            res.status(400).send(err);
+        }
+    }
+    fetchAdditionalData();
+})
 
 router.get("/stocks-chartdata/:ticker/", (req, res) => {
     // Get today's date
