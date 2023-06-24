@@ -91,7 +91,7 @@ router.get("/news/:ticker", (req, res) => {
     const { ticker } = req.params
     const fetchNewsData = async () => {
         try {
-            const response = await axios.get(`https://api.polygon.io/v2/reference/news?ticker=${ticker}&order=asc&limit=6&sort=published_utc&apiKey=${apiKey}`)
+            const response = await axios.get(`https://api.polygon.io/v2/reference/news?ticker=${ticker}&order=desc&limit=6&sort=published_utc&apiKey=${apiKey}`)
             res.status(200).json(response.data)
         } catch (err) {
             res.status(400).send(err);
@@ -130,9 +130,8 @@ router.get("/news", (_req, res) => {
 
     const fetchNewsData = async () => {
         try {
-            const response = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&limit=50&sort=EARLIEST&apikey=${newsApiKey}`)
-            const updateArr = response.data.feed.slice(0, 10)
-            res.status(200).json(updateArr)
+            const response = await axios.get(`https://api.polygon.io/v2/reference/news?order=desc&limit=10&apiKey=${apiKey}`)
+            res.status(200).json(response.data.results)
         } catch (err) {
             res.status(400).send(err);
         }
