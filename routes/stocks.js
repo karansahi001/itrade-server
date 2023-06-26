@@ -47,6 +47,18 @@ router.get("/stock-data/:ticker", (req, res) => {
     fetchTickerData();
 })
 
+router.get("/all-stocks", (req, res) => {
+    const fetchAllStocks = async () => {
+        try {
+            const response = await axios.get(`https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?apiKey=${apiKey}`)
+            res.status(200).json(response.data)
+        } catch (err) {
+            res.status(400).send(err);
+        }
+    }
+    fetchAllStocks();
+})
+
 router.get("/additional-data/:ticker", (req, res) => {
     const { ticker } = req.params
     const fetchAdditionalData = async () => {
