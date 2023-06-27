@@ -1,7 +1,6 @@
 require('dotenv').config();
 const router = require("express").Router();
 const axios = require('axios');
-const stocksController = require("../controllers/stocksData")
 
 const apiKey = process.env.API_KEY
 const newsApiKey = process.env.NEWS_API_KEY
@@ -152,6 +151,5 @@ router.get("/news", (_req, res) => {
     fetchNewsData();
 })
 
-router.post("/stocks", stocksController.buy)
 
 module.exports = router;
