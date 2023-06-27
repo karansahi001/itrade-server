@@ -90,6 +90,7 @@ router.get("/stocks-chartdata/:ticker/", (req, res) => {
     const { ticker } = req.params;
     const fetchTimestampData = async () => {
         try {
+            // respolution values to be used: 5, 15
             const response = await axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=15&from=${todayDay}&to=${currentTimeTime}&token=${chartApiKey}`)
             res.status(200).json(response.data)
         } catch (err) {
