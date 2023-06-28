@@ -20,9 +20,14 @@
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`REACT_APP_API_URL`
-`REACT_APP_IMAGE_API` 
-`REACT_APP_FB_API`
+`PORT`
+`API_KEY`
+`NEWS_API_KEY`
+`CHART_API_KEY`
+`DB_HOST`
+`DB_USER`
+`DB_PASS`
+`DB_NAME`
 
 
 <!-- Getting Started -->
