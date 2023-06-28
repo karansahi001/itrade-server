@@ -81,8 +81,19 @@ router.get("/stocks-chartdata/:ticker/", (req, res) => {
     today.setSeconds(0);
     today.setMilliseconds(0);
 
+    // Get today's date
+    const today2 = new Date();
+
+    // Set the time to yesterday at 9:30 am
+    const yesterday930am = new Date(today2.getFullYear(), today2.getMonth(), today2.getDate() - 1, 9, 30, 0);
+    const yesterday930amTimestamp = Math.floor(yesterday930am.getTime() / 1000);
+
+    // Set the time to yesterday at 4:00 pm
+    const yesterday4pm = new Date(today2.getFullYear(), today2.getMonth(), today2.getDate() - 1, 16, 0, 0);
+    const yesterday4pmTimestamp = Math.floor(yesterday4pm.getTime() / 1000);
+
     currentTime.setMinutes(currentTime.getMinutes() - 20);
-    currentTime.getHours() > 16 ? (currentTime.setHours(16),currentTime.setMinutes(00) ) : "";
+    currentTime.getHours() > 16 ? (currentTime.setHours(16), currentTime.setMinutes(00)) : "";
     const todayDay = Date.parse(today) / 1000;
     const currentTimeTime = Date.parse(currentTime) / 1000;
 
@@ -91,6 +102,10 @@ router.get("/stocks-chartdata/:ticker/", (req, res) => {
         try {
             // respolution values to be used: 5, 15
             const response = await axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=15&from=${todayDay}&to=${currentTimeTime}&token=${chartApiKey}`)
+            if (response.data.s == "no_data") {
+                const response2 = await axios.get(`https://finnhub.io/api/v1/stock/candle?symbol=${ticker}&resolution=15&from=${yesterday930amTimestamp}&to=${yesterday4pmTimestamp}&token=${chartApiKey}`)
+                res.status(200).json(response2.data)    
+            }
             res.status(200).json(response.data)
         } catch (err) {
             res.status(400).send(err);
