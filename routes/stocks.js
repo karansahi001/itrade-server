@@ -45,6 +45,7 @@ router.get("/stock-data/:ticker", (req, res) => {
             res.status(400).send(err);
         }
     }
+    
     fetchTickerData();
 })
 
