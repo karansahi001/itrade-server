@@ -5,13 +5,15 @@ const axios = require('axios');
 const apiKey = process.env.API_KEY
 const newsApiKey = process.env.NEWS_API_KEY
 const chartApiKey = process.env.CHART_API_KEY
+const alphaKey = process.env.APLPHA_KEY
 
 const apiUrl = "https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=TSLA,AAPL,NVDA,QQQ,AMD,VOO,AMC,TD,RBLX,INTC,KO,AI,LOGI,DIS,VYM,PG,SBUX,HD,COST,WMT,PFE&apiKey=";
+const trendingStocksApi = "https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey="
 
 router.get("/stocks", (_req, res) => {
     const fetchData = async () => {
         try {
-            const response = await axios.get(`${apiUrl}${apiKey}`)
+            const response = await axios.get(`${trendingStocksApi}${alphaKey}`)
             res.status(200).json(response.data)
         } catch (err) {
             res.status(400).send(err);
@@ -37,12 +39,13 @@ router.get("/stock-data/:ticker", (req, res) => {
     const { ticker } = req.params
     const fetchTickerData = async () => {
         try {
-            const response = await axios.get(`https://api.polygon.io/v2/snapshot/locale/us/markets/stocks/tickers?tickers=${ticker}&apiKey=${apiKey}`)
+            const response = await axios.get(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${process.env.CHART_API_KEY}`)
             res.status(200).json(response.data)
         } catch (err) {
             res.status(400).send(err);
         }
     }
+    
     fetchTickerData();
 })
 
@@ -157,8 +160,10 @@ router.get("/news", (_req, res) => {
 
     const fetchNewsData = async () => {
         try {
-            const response = await axios.get(`https://api.polygon.io/v2/reference/news?order=desc&limit=10&apiKey=${apiKey}`)
-            res.status(200).json(response.data.results)
+            // const response = await axios.get(`https://api.polygon.io/v2/reference/news?order=desc&limit=10&apiKey=${apiKey}`)
+            const response = await axios.get(`https://www.alphavantage.co/query?function=NEWS_SENTIMENT&apikey=${newsApiKey}`)
+
+            res.status(200).json(response.data)
         } catch (err) {
             res.status(400).send(err);
         }
